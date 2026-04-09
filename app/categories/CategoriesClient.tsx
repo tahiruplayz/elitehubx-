@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import type { Game } from '@/lib/games';
 import GameCard from '@/components/GameCard';
+import { Gamepad2 } from 'lucide-react';
 
 export default function CategoriesClient({ games }: { games: Game[] }) {
   const [selectedCat,  setSelectedCat]  = useState('');
@@ -114,7 +115,9 @@ export default function CategoriesClient({ games }: { games: Game[] }) {
         <div>
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--text3)' }}>
-              <p style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🔍</p>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+                <Gamepad2 size={48} strokeWidth={1.2} />
+              </div>
               <p>No games match your filters.</p>
             </div>
           ) : (

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import GameCard from '@/components/GameCard';
 import GameDetailClient from './GameDetailClient';
 import type { Game } from '@/lib/games';
+import { Package, Eye, ArrowDownToLine, Download, Star } from 'lucide-react';
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -80,7 +81,7 @@ export default async function GameDetailPage({ params }: Props) {
           <div style={{ display: 'flex', gap: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
             {isNew     && <span className="badge badge-green">New</span>}
             {isPopular && <span className="badge badge-amber">Popular</span>}
-            <span className="badge badge-solid">⭐ Top Rated</span>
+            <span className="badge badge-solid">Top Rated</span>
             <span className="badge badge-purple">{game.category}</span>
           </div>
           <h1
@@ -96,9 +97,19 @@ export default async function GameDetailPage({ params }: Props) {
             {game.title}
           </h1>
           <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <span style={{ color: 'var(--text2)', fontSize: '0.85rem' }}>📦 {game.size}</span>
-            {(game.views ?? 0) > 0 && <span style={{ color: 'var(--text3)', fontSize: '0.82rem' }}>👁 {game.views?.toLocaleString()} views</span>}
-            {(game.downloads ?? 0) > 0 && <span style={{ color: 'var(--text3)', fontSize: '0.82rem' }}>⬇ {game.downloads?.toLocaleString()} downloads</span>}
+            <span style={{ color: 'var(--text2)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Package size={13} /> {game.size}
+            </span>
+            {(game.views ?? 0) > 0 && (
+              <span style={{ color: 'var(--text3)', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Eye size={13} /> {game.views?.toLocaleString()} views
+              </span>
+            )}
+            {(game.downloads ?? 0) > 0 && (
+              <span style={{ color: 'var(--text3)', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <ArrowDownToLine size={13} /> {game.downloads?.toLocaleString()} downloads
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -109,13 +120,10 @@ export default async function GameDetailPage({ params }: Props) {
         {/* Left column */}
         <div>
           {/* Rating */}
-          <div
-            className="card"
-            style={{ padding: '14px 18px', marginBottom: '16px', display: 'inline-flex', alignItems: 'center', gap: '10px' }}
-          >
+          <div className="card" style={{ padding: '14px 18px', marginBottom: '16px', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ display: 'flex', gap: '2px' }}>
               {[1,2,3,4,5].map(s => (
-                <span key={s} style={{ fontSize: '1rem', color: s <= stars ? '#f59e0b' : '#2a2a2a' }}>★</span>
+                <Star key={s} size={15} fill={s <= stars ? '#f59e0b' : 'none'} color={s <= stars ? '#f59e0b' : '#2a2a2a'} />
               ))}
             </div>
             <span style={{ color: 'var(--text)', fontWeight: 800, fontSize: '1rem' }}>{rating}</span>
@@ -155,7 +163,7 @@ export default async function GameDetailPage({ params }: Props) {
           <p style={{ color: 'var(--text3)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>File Size</p>
           <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: '1.3rem', marginBottom: '18px' }}>{game.size}</p>
           <Link href={`/download/${game.id}`} className="btn-primary" style={{ width: '100%', marginBottom: '10px' }}>
-            ⬇ Download Game
+            <Download size={15} /> Download Game
           </Link>
           <p style={{ color: 'var(--text3)', fontSize: '0.7rem', lineHeight: 1.5 }}>
             Redirects to official source

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import type { Game } from '@/lib/games';
+import { Gamepad2, Folder, Eye, ArrowDownToLine, LayoutDashboard, PlusCircle, Library, CheckCircle, XCircle, LogOut, Plus } from 'lucide-react';
 
 const EMPTY = { title: '', description: '', image: '', category: '', size: '', downloadLink: '', tagsStr: '' };
 
@@ -70,10 +71,10 @@ export default function AdminClient() {
   const categories = [...new Set(games.map(g => g.category))];
   const recent     = games.slice(0, 4);
 
-  const TABS: [Tab, string][] = [
-    ['dashboard', '📊 Dashboard'],
-    ['add',       editing ? '✏️ Edit' : '➕ Add Game'],
-    ['games',     '📋 Library'],
+  const TABS: [Tab, string, React.ReactNode][] = [
+    ['dashboard', 'Dashboard',              <LayoutDashboard key="d" size={14} />],
+    ['add',       editing ? 'Edit' : 'Add Game', editing ? <PlusCircle key="e" size={14} /> : <Plus key="a" size={14} />],
+    ['games',     'Library',                <Library key="l" size={14} />],
   ];
 
   return (
@@ -81,17 +82,8 @@ export default function AdminClient() {
 
       {/* Toast */}
       {toast && (
-        <div style={{
-          position: 'fixed', top: '76px', right: '20px', zIndex: 200,
-          padding: '12px 18px', borderRadius: '10px', fontWeight: 600, fontSize: '0.88rem',
-          backdropFilter: 'blur(12px)',
-          background: toast.ok ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
-          border: `1px solid ${toast.ok ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`,
-          color: toast.ok ? '#4ade80' : '#f87171',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-          animation: 'fadeUp 0.3s ease',
-        }}>
-          {toast.ok ? '✅' : '⚠️'} {toast.msg}
+        <div style={{ position: 'fixed', top: '76px', right: '20px', zIndex: 200, padding: '12px 18px', borderRadius: '10px', fontWeight: 600, fontSize: '0.88rem', backdropFilter: 'blur(12px)', background: toast.ok ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)', border: `1px solid ${toast.ok ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`, color: toast.ok ? '#4ade80' : '#f87171', boxShadow: '0 8px 32px rgba(0,0,0,0.4)', animation: 'fadeUp 0.3s ease', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {toast.ok ? <CheckCircle size={15} /> : <XCircle size={15} />} {toast.msg}
         </div>
       )}
 
@@ -101,29 +93,16 @@ export default function AdminClient() {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em' }}>Admin Panel</h1>
           <p style={{ color: 'var(--text3)', fontSize: '0.82rem', marginTop: '2px' }}>EliteHubX Game Management</p>
         </div>
-        <button
-          onClick={handleLogout}
-          style={{ padding: '8px 18px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', cursor: 'pointer', fontWeight: 600, fontSize: '0.82rem' }}
-        >
-          Sign Out
+        <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 18px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', cursor: 'pointer', fontWeight: 600, fontSize: '0.82rem' }}>
+          <LogOut size={14} /> Sign Out
         </button>
       </div>
 
-      {/* Tabs */}
       <div style={{ display: 'flex', gap: '4px', marginBottom: '24px', background: 'var(--card)', padding: '4px', borderRadius: '12px', width: 'fit-content', border: '1px solid var(--border)' }}>
-        {TABS.map(([t, label]) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            style={{
-              padding: '8px 18px', border: 'none', cursor: 'pointer',
-              fontWeight: 600, fontSize: '0.83rem', borderRadius: '9px',
-              transition: 'all 0.18s ease',
-              background: tab === t ? 'linear-gradient(135deg, var(--purple), var(--purple2))' : 'transparent',
-              color: tab === t ? '#fff' : 'var(--text3)',
-            }}
-          >
-            {label}
+        {TABS.map(([t, label, icon]) => (
+          <button key={t} onClick={() => setTab(t)}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 18px', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.83rem', borderRadius: '9px', transition: 'all 0.18s ease', background: tab === t ? 'linear-gradient(135deg, var(--purple), var(--purple2))' : 'transparent', color: tab === t ? '#fff' : 'var(--text3)' }}>
+            {icon}{label}
           </button>
         ))}
       </div>
@@ -131,16 +110,15 @@ export default function AdminClient() {
       {/* ── DASHBOARD ─────────────────────────────────────────── */}
       {tab === 'dashboard' && (
         <div className="fade-in">
-          {/* Stats */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', marginBottom: '24px' }}>
             {[
-              { label: 'Total Games',  value: games.length,                                              icon: '🎮', color: 'var(--purple-l)' },
-              { label: 'Categories',   value: categories.length,                                         icon: '📂', color: '#22d3ee' },
-              { label: 'Total Views',  value: games.reduce((a, g) => a + (g.views ?? 0), 0),             icon: '👁',  color: 'var(--amber)' },
-              { label: 'Downloads',    value: games.reduce((a, g) => a + (g.downloads ?? 0), 0),         icon: '⬇',  color: 'var(--green)' },
+              { label: 'Total Games',  value: games.length,                                      icon: <Gamepad2 size={22} />,        color: 'var(--purple-l)' },
+              { label: 'Categories',   value: categories.length,                                 icon: <Folder size={22} />,          color: '#22d3ee' },
+              { label: 'Total Views',  value: games.reduce((a, g) => a + (g.views ?? 0), 0),     icon: <Eye size={22} />,             color: 'var(--amber)' },
+              { label: 'Downloads',    value: games.reduce((a, g) => a + (g.downloads ?? 0), 0), icon: <ArrowDownToLine size={22} />, color: 'var(--green)' },
             ].map(s => (
               <div key={s.label} className="card" style={{ padding: '20px', textAlign: 'center' }}>
-                <div style={{ fontSize: '1.6rem', marginBottom: '8px' }}>{s.icon}</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px', color: s.color }}>{s.icon}</div>
                 <div style={{ fontSize: '1.7rem', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value.toLocaleString()}</div>
                 <div style={{ color: 'var(--text3)', fontSize: '0.75rem', marginTop: '4px' }}>{s.label}</div>
               </div>
@@ -259,7 +237,7 @@ export default function AdminClient() {
             <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text3)' }}>Loading…</div>
           ) : games.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '48px', color: 'var(--text3)' }}>
-              <p style={{ fontSize: '2.5rem', marginBottom: '10px' }}>🎮</p>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}><Gamepad2 size={40} strokeWidth={1.2} /></div>
               <p>No games yet.</p>
             </div>
           ) : (

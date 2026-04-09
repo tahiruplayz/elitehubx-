@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Game } from '@/lib/games';
 import Link from 'next/link';
+import { Download, Clock, CheckCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 
 export default function DownloadClient({ game }: { game: Game }) {
   const [countdown, setCountdown] = useState(10);
@@ -45,22 +46,10 @@ export default function DownloadClient({ game }: { game: Game }) {
         Advertisement
       </div>
 
-      <div
-        className="card fade-in"
-        style={{ width: '100%', maxWidth: '460px', padding: '36px 32px', textAlign: 'center' }}
-      >
-        {/* Game thumbnail */}
-        <div
-          style={{
-            width: '100px', height: '70px',
-            margin: '0 auto 20px',
-            borderRadius: '10px', overflow: 'hidden',
-            border: '1px solid var(--border-p)',
-            boxShadow: '0 0 24px rgba(124,58,237,0.2)',
-          }}
-        >
-          <img
-            src={game.image} alt={game.title}
+      <div className="card fade-in" style={{ width: '100%', maxWidth: '460px', padding: '36px 32px', textAlign: 'center' }}>
+        {/* Thumbnail */}
+        <div style={{ width: '100px', height: '70px', margin: '0 auto 20px', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(124,58,237,0.3)', boxShadow: '0 0 24px rgba(124,58,237,0.2)' }}>
+          <img src={game.image} alt={game.title}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={e => { (e.target as HTMLImageElement).src = `https://placehold.co/100x70/1a1a1a/7c3aed?text=?`; }}
           />
@@ -74,27 +63,10 @@ export default function DownloadClient({ game }: { game: Game }) {
         </p>
 
         {/* Countdown ring */}
-        <div
-          style={{
-            width: '100px', height: '100px',
-            borderRadius: '50%',
-            background: `conic-gradient(var(--purple) ${deg}deg, rgba(124,58,237,0.1) 0deg)`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 12px',
-            transition: 'background 0.9s ease',
-          }}
-        >
-          <div
-            style={{
-              width: '76px', height: '76px',
-              borderRadius: '50%',
-              background: 'var(--card)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexDirection: 'column',
-            }}
-          >
+        <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: `conic-gradient(var(--purple) ${deg}deg, rgba(124,58,237,0.1) 0deg)`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', transition: 'background 0.9s ease' }}>
+          <div style={{ width: '76px', height: '76px', borderRadius: '50%', background: 'var(--card)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
             {ready ? (
-              <span style={{ fontSize: '1.6rem' }}>✅</span>
+              <CheckCircle size={28} color="#22c55e" />
             ) : (
               <>
                 <span style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--purple-l)', lineHeight: 1 }}>{countdown}</span>
@@ -108,7 +80,8 @@ export default function DownloadClient({ game }: { game: Game }) {
         <div style={{ height: '3px', background: 'rgba(124,58,237,0.12)', borderRadius: '2px', overflow: 'hidden', marginBottom: '8px' }}>
           <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg, var(--purple), var(--purple-l))', borderRadius: '2px', transition: 'width 0.9s ease' }} />
         </div>
-        <p style={{ color: 'var(--text3)', fontSize: '0.75rem', marginBottom: '28px' }}>
+        <p style={{ color: 'var(--text3)', fontSize: '0.75rem', marginBottom: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+          {ready ? <CheckCircle size={13} color="#22c55e" /> : <Clock size={13} />}
           {ready ? 'Ready!' : 'Preparing your download…'}
         </p>
 
@@ -119,36 +92,21 @@ export default function DownloadClient({ game }: { game: Game }) {
         </div>
 
         {/* Download button */}
-        <button
-          onClick={handleDownload}
-          disabled={!ready}
-          className="btn-primary"
-          style={{ width: '100%', fontSize: '0.95rem', padding: '13px' }}
-        >
-          {ready ? '⬇ Continue to Download' : '⏳ Please wait…'}
+        <button onClick={handleDownload} disabled={!ready} className="btn-primary" style={{ width: '100%', fontSize: '0.95rem', padding: '13px' }}>
+          {ready
+            ? <><Download size={16} /> Continue to Download</>
+            : <><Clock size={16} /> Please wait…</>
+          }
         </button>
 
         {/* Warning */}
-        <div
-          style={{
-            marginTop: '16px',
-            padding: '10px 14px',
-            background: 'rgba(245,158,11,0.06)',
-            border: '1px solid rgba(245,158,11,0.18)',
-            borderRadius: '8px',
-            fontSize: '0.78rem',
-            color: '#fbbf24',
-            lineHeight: 1.55,
-          }}
-        >
-          ⚠️ You will be redirected to an external website. Login may be required there.
+        <div style={{ marginTop: '16px', padding: '10px 14px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.18)', borderRadius: '8px', fontSize: '0.78rem', color: '#fbbf24', lineHeight: 1.55, display: 'flex', alignItems: 'flex-start', gap: '8px', textAlign: 'left' }}>
+          <AlertTriangle size={14} style={{ flexShrink: 0, marginTop: '1px' }} />
+          You will be redirected to an external website. Login may be required there.
         </div>
 
-        <Link
-          href={`/game/${game.id}`}
-          style={{ display: 'block', marginTop: '16px', color: 'var(--text3)', fontSize: '0.78rem', textDecoration: 'none' }}
-        >
-          ← Back to game details
+        <Link href={`/game/${game.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginTop: '16px', color: 'var(--text3)', fontSize: '0.78rem', textDecoration: 'none' }}>
+          <ArrowLeft size={13} /> Back to game details
         </Link>
       </div>
     </div>
