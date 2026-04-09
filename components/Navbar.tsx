@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Search, Shield, User, LogOut, LogIn, UserPlus, Gamepad2, X, Menu } from 'lucide-react';
+import { Search, Shield, User, LogOut, LogIn, UserPlus, X, Menu } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import type { Game } from '@/lib/games';
 
@@ -72,20 +72,27 @@ export default function Navbar() {
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname.startsWith(href);
 
-  const NavLink = ({ href, label }: { href: string; label: string }) => (
-    <Link href={href} style={{
-      color: isActive(href) ? '#a855f7' : '#94a3b8',
-      fontSize: '0.88rem', fontWeight: isActive(href) ? 700 : 500,
-      textDecoration: 'none', transition: 'color 0.2s',
-      paddingBottom: '2px',
-      borderBottom: isActive(href) ? '2px solid #a855f7' : '2px solid transparent',
-    }}
-      onMouseEnter={e => { if (!isActive(href)) e.currentTarget.style.color = '#c084fc'; }}
-      onMouseLeave={e => { if (!isActive(href)) e.currentTarget.style.color = '#94a3b8'; }}
-    >
-      {label}
-    </Link>
-  );
+  const NavLink = ({ href, label }: { href: string; label: string }) => {
+    const active = isActive(href);
+    return (
+      <Link
+        href={href}
+        prefetch={true}
+        style={{
+          color: active ? '#a855f7' : '#94a3b8',
+          fontSize: '0.88rem',
+          fontWeight: active ? 700 : 500,
+          textDecoration: 'none',
+          paddingBottom: '2px',
+          borderBottom: active ? '2px solid #a855f7' : '2px solid transparent',
+          transition: 'color 0.15s, border-color 0.15s',
+        }}
+        className="nav-link"
+      >
+        {label}
+      </Link>
+    );
+  };
 
   return (
     <>
@@ -104,12 +111,19 @@ export default function Navbar() {
       >
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.25rem', height: '60px', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
 
-          {/* Logo */}
-          <Link href="/" style={{ textDecoration: 'none', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '30px', height: '30px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px rgba(124,58,237,0.5)' }}>
-              <Gamepad2 size={16} color="white" />
-            </div>
-            <span style={{ background: 'linear-gradient(135deg, #e2e8f0, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: '1.3rem', letterSpacing: '-0.03em' }}>
+          {/* Logo — text only, stylish gradient */}
+          <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <span style={{
+              background: 'linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #7c3aed 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              fontWeight: 900,
+              fontSize: '1.35rem',
+              letterSpacing: '-0.04em',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              textTransform: 'uppercase',
+            }}>
               EliteHubX
             </span>
           </Link>
@@ -240,9 +254,9 @@ export default function Navbar() {
         {/* Mobile menu */}
         {mobileOpen && (
           <div style={{ borderTop: '1px solid rgba(124,58,237,0.15)', padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'rgba(8,8,16,0.98)' }}>
-            <Link href="/" style={{ color: isActive('/') ? '#a855f7' : '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Home</Link>
-            <Link href="/categories" style={{ color: isActive('/categories') ? '#a855f7' : '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Browse</Link>
-            {user?.role === 'admin' && <Link href="/admin" style={{ color: '#a855f7', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Admin Panel</Link>}
+            <Link prefetch href="/" style={{ color: isActive('/') ? '#a855f7' : '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Home</Link>
+            <Link prefetch href="/categories" style={{ color: isActive('/categories') ? '#a855f7' : '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Browse</Link>
+            {user?.role === 'admin' && <Link prefetch href="/admin" style={{ color: '#a855f7', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Admin Panel</Link>}
             <div style={{ borderTop: '1px solid rgba(124,58,237,0.1)', paddingTop: '0.75rem', display: 'flex', gap: '0.5rem' }}>
               {user ? (
                 <button onClick={handleLogout} style={{ padding: '0.5rem 1rem', borderRadius: '8px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#f87171', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>

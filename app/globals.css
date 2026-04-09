@@ -243,3 +243,6 @@ body {
   background: var(--border);
   margin: 0;
 }
+
+/* Nav link hover — pure CSS, no JS needed */
+.nav-link:hover { color: #c084fc !important; }
