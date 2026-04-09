@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EliteHubX 🎮
 
-## Getting Started
+Premium gaming hub — Next.js 16 + Supabase + Vercel
 
-First, run the development server:
+---
+
+## Stack
+
+| Layer    | Tech                        |
+|----------|-----------------------------|
+| Frontend | Next.js 16 (App Router)     |
+| Database | Supabase (PostgreSQL)       |
+| Auth     | JWT + bcrypt (custom)       |
+| Hosting  | Vercel                      |
+| Fallback | Local JSON (`data/games.json`) |
+
+---
+
+## 1 — Supabase Setup
+
+1. Go to [supabase.com](https://supabase.com) → **New Project**
+2. Open **SQL Editor** → paste the contents of `supabase/schema.sql` → **Run**
+3. Go to **Settings → API** and copy:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY`
+
+---
+
+## 2 — Local Development
 
 ```bash
+# Clone and install
+git clone https://github.com/YOUR_USERNAME/elitehubx.git
+cd elitehubx
+npm install
+
+# Set up environment
+cp .env.example .env.local
+# Fill in your Supabase keys in .env.local
+
+# Run dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 3 — Push to GitHub
 
-## Learn More
+```bash
+cd elitehubx
+git init
+git add .
+git commit -m "feat: initial EliteHubX release"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/elitehubx.git
+git push -u origin main
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 4 — Deploy to Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Option A — Vercel Dashboard (recommended)
+1. Go to [vercel.com](https://vercel.com) → **Add New Project**
+2. Import your GitHub repo
+3. Add these **Environment Variables** in Vercel dashboard:
 
-## Deploy on Vercel
+| Key | Value |
+|-----|-------|
+| `NEXT_PUBLIC_SUPABASE_URL` | your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | your service role key |
+| `JWT_SECRET` | a long random string |
+| `ADMIN_EMAIL` | `tahiruplayz@gmail.com` |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Click **Deploy** — done!
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Option B — Vercel CLI
+```bash
+npm i -g vercel
+vercel login
+vercel --prod
+```
+
+---
+
+## 5 — Admin Access
+
+- Visit `/signup` and register with `tahiruplayz@gmail.com`
+- That email auto-gets `role = admin`
+- Access the admin panel at `/admin`
+
+---
+
+## Environment Variables Reference
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
+JWT_SECRET=your_random_secret
+ADMIN_EMAIL=tahiruplayz@gmail.com
+```
+
+---
+
+## Project Structure
+
+```
+elitehubx/
+├── app/                  # Next.js App Router pages + API routes
+│   ├── api/              # REST API (games, auth)
+│   ├── admin/            # Admin panel
+│   ├── game/[id]/        # Game detail
+│   ├── download/[id]/    # Download page
+│   ├── categories/       # Browse page
+│   ├── login/            # Login page
+│   └── signup/           # Signup page
+├── components/           # Reusable UI components
+├── context/              # AuthContext (session persistence)
+├── lib/
+│   ├── supabase.ts       # Supabase client
+│   ├── db.ts             # All database operations
+│   ├── auth.ts           # JWT helpers
+│   └── games.ts          # JSON fallback helpers
+├── supabase/
+│   └── schema.sql        # Run this in Supabase SQL editor
+├── data/
+│   └── games.json        # JSON fallback (auto-synced)
+├── .env.example          # Copy to .env.local
+└── vercel.json           # Vercel config
+```
