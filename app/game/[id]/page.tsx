@@ -1,15 +1,35 @@
 import { getAllGamesFromJSON, getGameById } from '@/lib/games';
+import { dbGetAllGames, dbGetGameById } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import GameCard from '@/components/GameCard';
 import GameDetailClient from './GameDetailClient';
+import type { Game } from '@/lib/games';
 
 interface Props { params: Promise<{ id: string }> }
 
+export const revalidate = 60;
+
+async function getGame(id: string): Promise<Game | null> {
+  try {
+    const g = await dbGetGameById(id);
+    if (g) return g;
+  } catch { /* fallback */ }
+  return getGameById(id) ?? null;
+}
+
+async function getAllGames(): Promise<Game[]> {
+  try {
+    const games = await dbGetAllGames();
+    if (games.length > 0) return games;
+  } catch { /* fallback */ }
+  return getAllGamesFromJSON();
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const game = getGameById(id);
+  const game = await getGame(id);
   if (!game) return { title: 'Game Not Found' };
   return {
     title: `${game.title} – Download`,
@@ -24,11 +44,11 @@ export async function generateStaticParams() {
 
 export default async function GameDetailPage({ params }: Props) {
   const { id } = await params;
-  const game = getGameById(id);
+  const game = await getGame(id);
   if (!game) notFound();
 
-  const allGames = getAllGamesFromJSON();
-  const related = allGames.filter(g => g.id !== id && g.category === game.category).slice(0, 8);
+  const allGamesData = await getAllGames();
+  const related = allGamesData.filter(g => g.id !== id && g.category === game.category).slice(0, 8);
 
   const rating = (3.5 + (parseInt(game.id) % 15) * 0.1).toFixed(1);
   const stars  = Math.round(parseFloat(rating));

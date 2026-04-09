@@ -1,4 +1,5 @@
 import { getAllGamesFromJSON } from '@/lib/games';
+import { dbGetAllGames } from '@/lib/db';
 import GameRow from '@/components/GameRow';
 import GameCard from '@/components/GameCard';
 import Link from 'next/link';
@@ -13,9 +14,17 @@ const CAT_ICONS: Record<string, string> = {
   Sports: '⚽', Racing: '🏎️', Strategy: '♟️', Adventure: '🗺️',
 };
 
+export const revalidate = 60; // revalidate every 60s
+
 export default async function HomePage({ searchParams }: Props) {
   const params = await searchParams;
-  const allGames = getAllGamesFromJSON();
+
+  // Fetch from Supabase, fall back to JSON
+  let allGames = getAllGamesFromJSON();
+  try {
+    const dbGames = await dbGetAllGames();
+    if (dbGames.length > 0) allGames = dbGames;
+  } catch { /* use JSON fallback */ }
 
   const search = params.search?.toLowerCase() ?? '';
   const category = params.category ?? '';
