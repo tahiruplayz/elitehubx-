@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-// Unified Game type used across the app
 export interface Game {
   id: string;
   title: string;
@@ -18,7 +17,15 @@ export interface Game {
 
 const dataPath = path.join(process.cwd(), 'data', 'games.json');
 
-// ── JSON helpers ──────────────────────────────────────────────────────────────
+// Whether the filesystem is writable (false on Netlify/Vercel)
+function isWritable(): boolean {
+  try {
+    fs.accessSync(path.join(process.cwd(), 'data'), fs.constants.W_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function getAllGamesFromJSON(): Game[] {
   try {
@@ -30,33 +37,32 @@ export function getAllGamesFromJSON(): Game[] {
 }
 
 export function saveGamesToJSON(games: Game[]): void {
-  fs.writeFileSync(dataPath, JSON.stringify(games, null, 2), 'utf-8');
+  if (!isWritable()) return; // skip on read-only filesystems (Netlify)
+  try {
+    fs.writeFileSync(dataPath, JSON.stringify(games, null, 2), 'utf-8');
+  } catch { /* silently skip */ }
 }
 
-// Sync a single game into JSON (upsert by id)
 export function syncGameToJSON(game: Game): void {
-  const games = getAllGamesFromJSON();
-  const idx = games.findIndex(g => g.id === game.id);
-  if (idx >= 0) games[idx] = game;
-  else games.unshift(game);
-  saveGamesToJSON(games);
+  if (!isWritable()) return;
+  try {
+    const games = getAllGamesFromJSON();
+    const idx = games.findIndex(g => g.id === game.id);
+    if (idx >= 0) games[idx] = game;
+    else games.unshift(game);
+    saveGamesToJSON(games);
+  } catch { /* silently skip */ }
 }
 
 export function removeGameFromJSON(id: string): void {
-  const games = getAllGamesFromJSON().filter(g => g.id !== id);
-  saveGamesToJSON(games);
+  if (!isWritable()) return;
+  try {
+    const games = getAllGamesFromJSON().filter(g => g.id !== id);
+    saveGamesToJSON(games);
+  } catch { /* silently skip */ }
 }
 
-// ── Legacy aliases (used by old server components) ────────────────────────────
-
-export function getAllGames(): Game[] {
-  return getAllGamesFromJSON();
-}
-
-export function getGameById(id: string): Game | undefined {
-  return getAllGamesFromJSON().find(g => g.id === id);
-}
-
-export function saveGames(games: Game[]): void {
-  saveGamesToJSON(games);
-}
+// Legacy aliases
+export function getAllGames(): Game[] { return getAllGamesFromJSON(); }
+export function getGameById(id: string): Game | undefined { return getAllGamesFromJSON().find(g => g.id === id); }
+export function saveGames(games: Game[]): void { saveGamesToJSON(games); }

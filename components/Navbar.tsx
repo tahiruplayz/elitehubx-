@@ -203,10 +203,6 @@ export default function Navbar() {
                   {user.role === 'admin' ? <Shield size={10} /> : <User size={10} />}
                   {user.role === 'admin' ? 'Admin' : 'User'}
                 </div>
-                {/* Email */}
-                <span style={{ color: '#475569', fontSize: '0.75rem', maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {user.email}
-                </span>
                 {/* Logout */}
                 <button onClick={handleLogout}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.38rem 0.85rem', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, transition: 'all 0.2s' }}
