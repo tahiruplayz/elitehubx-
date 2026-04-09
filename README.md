@@ -11,7 +11,7 @@ Premium gaming hub — Next.js 16 + Supabase + Vercel
 | Frontend | Next.js 16 (App Router)     |
 | Database | Supabase (PostgreSQL)       |
 | Auth     | JWT + bcrypt (custom)       |
-| Hosting  | Vercel                      |
+| Hosting  | Netlify                     |
 | Fallback | Local JSON (`data/games.json`) |
 
 ---
@@ -61,12 +61,15 @@ git push -u origin main
 
 ---
 
-## 4 — Deploy to Vercel
+## 4 — Deploy to Netlify
 
-### Option A — Vercel Dashboard (recommended)
-1. Go to [vercel.com](https://vercel.com) → **Add New Project**
-2. Import your GitHub repo
-3. Add these **Environment Variables** in Vercel dashboard:
+### Option A — Netlify Dashboard (recommended)
+1. Go to [netlify.com](https://netlify.com) → **Add new site → Import an existing project**
+2. Connect GitHub and select your `elitehubx` repo
+3. Build settings are auto-detected from `netlify.toml`:
+   - Build command: `npm run build`
+   - Publish directory: `.next`
+4. Go to **Site settings → Environment variables** and add:
 
 | Key | Value |
 |-----|-------|
@@ -76,13 +79,19 @@ git push -u origin main
 | `JWT_SECRET` | a long random string |
 | `ADMIN_EMAIL` | `tahiruplayz@gmail.com` |
 
-4. Click **Deploy** — done!
+5. Click **Deploy site** — done! Netlify gives you a live `*.netlify.app` URL.
 
-### Option B — Vercel CLI
+### Option B — Netlify CLI
 ```bash
-npm i -g vercel
-vercel login
-vercel --prod
+npm install -g netlify-cli
+netlify login
+netlify init        # link to your site
+netlify env:set NEXT_PUBLIC_SUPABASE_URL "https://xxxx.supabase.co"
+netlify env:set NEXT_PUBLIC_SUPABASE_ANON_KEY "eyJ..."
+netlify env:set SUPABASE_SERVICE_ROLE_KEY "eyJ..."
+netlify env:set JWT_SECRET "your_random_secret"
+netlify env:set ADMIN_EMAIL "tahiruplayz@gmail.com"
+netlify deploy --prod
 ```
 
 ---
