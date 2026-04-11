@@ -48,11 +48,7 @@ export default function DownloadClient({ game }: { game: Game }) {
         strategy="afterInteractive"
         data-cfasync="false"
       />
-      {/* Top ad */}
-      {/* INSERT PropellerAds banner (728×90) here */}
-      <div className="ad-placeholder" style={{ width: '100%', maxWidth: '728px', height: '80px', marginBottom: '32px' }}>
-        Advertisement
-      </div>
+      {/* Top ad — Monetag handles placement automatically */}
 
       <div className="card fade-in" style={{ width: '100%', maxWidth: '460px', padding: '36px 32px', textAlign: 'center' }}>
         {/* Thumbnail */}
@@ -93,11 +89,7 @@ export default function DownloadClient({ game }: { game: Game }) {
           {ready ? 'Ready!' : 'Preparing your download…'}
         </p>
 
-        {/* Center ad */}
-        {/* INSERT PropellerAds rectangle (300×250) here */}
-        <div className="ad-placeholder" style={{ height: '200px', marginBottom: '24px' }}>
-          Advertisement
-        </div>
+        {/* Center ad — Monetag handles placement automatically */}
 
         {/* Download button */}
         <button onClick={handleDownload} disabled={!ready} className="btn-primary" style={{ width: '100%', fontSize: '0.95rem', padding: '13px' }}>

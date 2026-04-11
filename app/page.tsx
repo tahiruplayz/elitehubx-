@@ -114,13 +114,6 @@ export default async function HomePage({ searchParams }: Props) {
 
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem 60px' }}>
 
-        {/* Ad banner */}
-        {allGames.length > 0 && (
-          <div className="ad-placeholder" style={{ height: '80px', marginBottom: '40px' }}>
-            Advertisement
-          </div>
-        )}
-
         {/* Search results */}
         {isSearching && (
           <>
