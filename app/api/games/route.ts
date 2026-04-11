@@ -31,6 +31,15 @@ export async function POST(req: NextRequest) {
   const tags = parseTags(body.tags);
 
   try {
+    // Check for duplicate title
+    const existing = await dbGetAllGames();
+    const duplicate = existing.find(
+      g => g.title.toLowerCase().trim() === body.title.toLowerCase().trim()
+    );
+    if (duplicate) {
+      return NextResponse.json({ error: `"${body.title}" is already added to the library.` }, { status: 409 });
+    }
+
     const game = await dbCreateGame({ ...body, tags });
     syncGameToJSON(game);
     return NextResponse.json(game, { status: 201 });
