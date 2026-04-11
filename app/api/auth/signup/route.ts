@@ -5,6 +5,10 @@ import { signToken } from '@/lib/auth';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@elitehubx.com';
 
+function isAdminEmail(email: string): boolean {
+  return ADMIN_EMAIL.split(',').map(e => e.trim().toLowerCase()).includes(email.toLowerCase());
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json() as { email: string; password: string };
@@ -24,7 +28,7 @@ export async function POST(req: NextRequest) {
     if (exists) return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
 
     const hashed = await bcrypt.hash(password, 12);
-    const role   = email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'admin' : 'user';
+    const role = isAdminEmail(email) ? 'admin' : 'user';
     const user   = await dbCreateUser(email, hashed, role);
 
     const token = signToken({ userId: user.id, email: user.email, role: user.role });

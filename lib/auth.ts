@@ -30,5 +30,8 @@ export async function getSession(): Promise<JWTPayload | null> {
 }
 
 export function isAdmin(session: JWTPayload | null): boolean {
-  return session?.role === 'admin' && session?.email === ADMIN_EMAIL;
+  if (!session || session.role !== 'admin') return false;
+  const adminEmails = (process.env.ADMIN_EMAIL || 'admin@elitehubx.com')
+    .split(',').map(e => e.trim().toLowerCase());
+  return adminEmails.includes(session.email.toLowerCase());
 }
