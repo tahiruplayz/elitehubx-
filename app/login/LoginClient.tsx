@@ -77,7 +77,7 @@ export default function LoginClient() {
               <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 16px rgba(124,58,237,0.5)' }}>
                 <Gamepad2 size={18} color="white" />
               </div>
-              <span style={{ background: 'linear-gradient(135deg, #e2e8f0, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: '1.5rem', letterSpacing: '-0.03em' }}>
+              <span style={{ background: 'linear-gradient(135deg, #e2e8f0, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: '1.5rem', letterSpacing: '0.05em', fontFamily: "'Cinzel', Georgia, serif" }}>
                 EliteHubX
               </span>
             </Link>

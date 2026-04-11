@@ -111,7 +111,7 @@ export default function Navbar() {
       >
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.25rem', height: '60px', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
 
-          {/* Logo — text only, stylish gradient */}
+          {/* Logo — calligraphy style */}
           <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
             <span style={{
               background: 'linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #7c3aed 100%)',
@@ -119,10 +119,9 @@ export default function Navbar() {
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               fontWeight: 900,
-              fontSize: '1.35rem',
-              letterSpacing: '-0.04em',
-              fontFamily: "'Inter', system-ui, sans-serif",
-              textTransform: 'uppercase',
+              fontSize: '1.4rem',
+              letterSpacing: '0.06em',
+              fontFamily: "'Cinzel', Georgia, serif",
             }}>
               EliteHubX
             </span>

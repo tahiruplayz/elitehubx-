@@ -5,22 +5,16 @@ import GameCard from '@/components/GameCard';
 import { Gamepad2 } from 'lucide-react';
 
 export default function CategoriesClient({ games }: { games: Game[] }) {
-  const [selectedCat,  setSelectedCat]  = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [search,       setSearch]       = useState('');
+  const [selectedCat, setSelectedCat] = useState('');
+  const [search, setSearch] = useState('');
 
   const categories = useMemo(() => [...new Set(games.map(g => g.category))].sort(), [games]);
-  const allTags    = useMemo(() => [...new Set(games.flatMap(g => g.tags))].sort(), [games]);
 
   const filtered = useMemo(() => games.filter(g => {
-    const matchCat    = !selectedCat  || g.category === selectedCat;
-    const matchTags   = selectedTags.length === 0 || selectedTags.every(t => g.tags.includes(t));
+    const matchCat    = !selectedCat || g.category === selectedCat;
     const matchSearch = !search || g.title.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchTags && matchSearch;
-  }), [games, selectedCat, selectedTags, search]);
-
-  const toggleTag = (tag: string) =>
-    setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+    return matchCat && matchSearch;
+  }), [games, selectedCat, search]);
 
   const Pill = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
     <button
@@ -88,22 +82,12 @@ export default function CategoriesClient({ games }: { games: Game[] }) {
             </div>
           </div>
 
-          {/* Tags */}
-          <div>
-            <p style={{ color: 'var(--text3)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '10px' }}>
-              Tags
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-              {allTags.map(tag => (
-                <Pill key={tag} label={`#${tag}`} active={selectedTags.includes(tag)} onClick={() => toggleTag(tag)} />
-              ))}
-            </div>
-          </div>
+          {/* Tags section removed — cleaner sidebar */}
 
           {/* Clear */}
-          {(selectedCat || selectedTags.length > 0 || search) && (
+          {(selectedCat || search) && (
             <button
-              onClick={() => { setSelectedCat(''); setSelectedTags([]); setSearch(''); }}
+              onClick={() => { setSelectedCat(''); setSearch(''); }}
               style={{ marginTop: '16px', width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600 }}
             >
               Clear Filters
