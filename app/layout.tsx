@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import { AuthProvider } from '@/context/AuthContext';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: { default: 'EliteHubX – Premium Gaming Hub', template: '%s | EliteHubX' },
@@ -14,6 +15,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body style={{ background: '#0f0f0f', minHeight: '100vh' }}>
+        {/* Monetag Multitag — zone 228717 */}
+        <Script
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="228717"
+          async
+          data-cfasync="false"
+          strategy="afterInteractive"
+        />
         <AuthProvider>
           <Navbar />
           <main>{children}</main>
