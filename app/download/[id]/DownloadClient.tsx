@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { Game } from '@/lib/games';
 import Link from 'next/link';
 import { Download, Clock, CheckCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
+import Script from 'next/script';
 
 export default function DownloadClient({ game }: { game: Game }) {
   const [countdown, setCountdown] = useState(10);
@@ -40,6 +41,13 @@ export default function DownloadClient({ game }: { game: Game }) {
       style={{ minHeight: '85vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px' }}
       onClick={handleInteraction}
     >
+      {/* Monetag OnClick Popunder — only on download page */}
+      <Script
+        src="https://quge5.com/88/tag.min.js"
+        data-zone="228717"
+        strategy="afterInteractive"
+        data-cfasync="false"
+      />
       {/* Top ad */}
       {/* INSERT PropellerAds banner (728×90) here */}
       <div className="ad-placeholder" style={{ width: '100%', maxWidth: '728px', height: '80px', marginBottom: '32px' }}>
