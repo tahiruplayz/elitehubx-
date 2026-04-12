@@ -1,4 +1,4 @@
-import { getAllGamesFromJSON, getGameById } from '@/lib/games';
+﻿import { getAllGamesFromJSON, getGameById } from '@/lib/games';
 import { dbGetAllGames, dbGetGameById } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const game = await getGame(id);
   if (!game) return { title: 'Game Not Found' };
   return {
-    title: `${game.title} – Download`,
+    title: `${game.title} ΓÇô Download`,
     description: game.description.slice(0, 155),
     openGraph: { title: game.title, description: game.description.slice(0, 155), images: [game.image] },
   };
@@ -62,7 +62,7 @@ export default async function GameDetailPage({ params }: Props) {
     <div className="fade-in" style={{ maxWidth: '1100px', margin: '0 auto', padding: '32px 20px 64px' }}>
       <GameDetailClient gameId={id} />
 
-      {/* ── BANNER ──────────────────────────────────────────────── */}
+      {/* ΓöÇΓöÇ BANNER ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
       <div
         style={{
           position: 'relative',
@@ -114,7 +114,7 @@ export default async function GameDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* ── BODY ────────────────────────────────────────────────── */}
+      {/* ΓöÇΓöÇ BODY ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 260px', gap: '24px', alignItems: 'start' }}>
 
         {/* Left column */}
@@ -153,7 +153,7 @@ export default async function GameDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Right column — CTA */}
+        {/* Right column ΓÇö CTA */}
         <div className="card" style={{ padding: '22px', textAlign: 'center', position: 'sticky', top: '80px' }}>
           <img
             src={game.image}
@@ -171,7 +171,7 @@ export default async function GameDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* ── RELATED ─────────────────────────────────────────────── */}
+      {/* ΓöÇΓöÇ RELATED ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
       {related.length > 0 && (
         <div style={{ marginTop: '48px' }}>
           <h2 className="section-title">More {game.category} Games</h2>

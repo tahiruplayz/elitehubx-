@@ -1,6 +1,6 @@
 'use client';
 import { useState, useMemo } from 'react';
-import type { Game } from '@/lib/games';
+import type { Game } from '@/lib/types';
 import GameCard from '@/components/GameCard';
 import { Gamepad2 } from 'lucide-react';
 

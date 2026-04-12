@@ -1,5 +1,5 @@
 import GameCard from './GameCard';
-import type { Game } from '@/lib/games';
+import type { Game } from '@/lib/types';
 import Link from 'next/link';
 
 interface Props {

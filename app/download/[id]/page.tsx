@@ -2,7 +2,7 @@ import { getGameById, getAllGamesFromJSON } from '@/lib/games';
 import { dbGetGameById } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import DownloadClient from './DownloadClient';
-import type { Game } from '@/lib/games';
+import type { Game } from '@/lib/types';
 
 interface Props { params: Promise<{ id: string }> }
 

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import type { Game } from '@/lib/games';
+import type { Game } from '@/lib/types';
 import Link from 'next/link';
 import { Download, Clock, CheckCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 import Script from 'next/script';

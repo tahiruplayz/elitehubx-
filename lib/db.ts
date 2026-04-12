@@ -23,6 +23,10 @@ function rowToGame(row: any): Game {
     views:        row.views ?? 0,
     downloads:    row.downloads ?? 0,
     createdAt:    row.created_at,
+    screenshots:  row.screenshots ?? [],
+    features:     row.features ?? [],
+    minReqs:      row.min_reqs && Object.keys(row.min_reqs).length > 0 ? row.min_reqs : undefined,
+    recReqs:      row.rec_reqs && Object.keys(row.rec_reqs).length > 0 ? row.rec_reqs : undefined,
   };
 }
 
@@ -61,6 +65,10 @@ export async function dbCreateGame(game: Omit<Game, 'id' | 'views' | 'downloads'
       size:          game.size,
       download_link: game.downloadLink,
       tags:          game.tags,
+      screenshots:   game.screenshots ?? [],
+      features:      game.features ?? [],
+      min_reqs:      game.minReqs ?? {},
+      rec_reqs:      game.recReqs ?? {},
     })
     .select()
     .single();
@@ -78,6 +86,10 @@ export async function dbUpdateGame(id: string, game: Partial<Omit<Game, 'id'>>):
   if (game.size         !== undefined) patch.size          = game.size;
   if (game.downloadLink !== undefined) patch.download_link = game.downloadLink;
   if (game.tags         !== undefined) patch.tags          = game.tags;
+  if (game.screenshots  !== undefined) patch.screenshots   = game.screenshots;
+  if (game.features     !== undefined) patch.features      = game.features;
+  if (game.minReqs      !== undefined) patch.min_reqs      = game.minReqs ?? {};
+  if (game.recReqs      !== undefined) patch.rec_reqs      = game.recReqs ?? {};
 
   const { data, error } = await sb
     .from('games')

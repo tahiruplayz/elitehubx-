@@ -2,10 +2,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import type { Game } from '@/lib/games';
+import type { Game } from '@/lib/types';
 import { Gamepad2, Folder, Eye, ArrowDownToLine, LayoutDashboard, PlusCircle, Library, CheckCircle, XCircle, LogOut, Plus } from 'lucide-react';
 
-const EMPTY = { title: '', description: '', image: '', category: '', size: '', downloadLink: '', tagsStr: '' };
+const EMPTY = {
+  title: '', description: '', image: '', category: '', size: '', downloadLink: '', tagsStr: '',
+  screenshotsStr: '', featuresStr: '',
+  minOs: '', minCpu: '', minRam: '', minGpu: '', minStorage: '',
+  recOs: '', recCpu: '', recRam: '', recGpu: '', recStorage: '',
+};
 
 type Tab = 'dashboard' | 'add' | 'games';
 
@@ -38,9 +43,22 @@ export default function AdminClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const payload = { ...form, tags: form.tagsStr.split(',').map(t => t.trim()).filter(Boolean) };
+    const payload = {
+      ...form,
+      tags: form.tagsStr.split(',').map(t => t.trim()).filter(Boolean),
+      screenshots: form.screenshotsStr.split('\n').map(s => s.trim()).filter(Boolean),
+      features: form.featuresStr.split('\n').map(s => s.trim()).filter(Boolean),
+      minReqs: (form.minOs || form.minCpu || form.minRam || form.minGpu || form.minStorage) ? {
+        os: form.minOs || undefined, cpu: form.minCpu || undefined, ram: form.minRam || undefined,
+        gpu: form.minGpu || undefined, storage: form.minStorage || undefined,
+      } : undefined,
+      recReqs: (form.recOs || form.recCpu || form.recRam || form.recGpu || form.recStorage) ? {
+        os: form.recOs || undefined, cpu: form.recCpu || undefined, ram: form.recRam || undefined,
+        gpu: form.recGpu || undefined, storage: form.recStorage || undefined,
+      } : undefined,
+    };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (payload as any).tagsStr;
+    ['tagsStr','screenshotsStr','featuresStr','minOs','minCpu','minRam','minGpu','minStorage','recOs','recCpu','recRam','recGpu','recStorage'].forEach(k => delete (payload as any)[k]);
     const method = editing ? 'PUT' : 'POST';
     const body   = editing ? { ...payload, id: editing } : payload;
     const res    = await fetch('/api/games', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -56,7 +74,17 @@ export default function AdminClient() {
 
   const handleEdit = (g: Game) => {
     setEditing(g.id);
-    setForm({ title: g.title, description: g.description, image: g.image, category: g.category, size: g.size, downloadLink: g.downloadLink, tagsStr: g.tags.join(', ') });
+    setForm({
+      title: g.title, description: g.description, image: g.image,
+      category: g.category, size: g.size, downloadLink: g.downloadLink,
+      tagsStr: g.tags.join(', '),
+      screenshotsStr: (g.screenshots ?? []).join('\n'),
+      featuresStr: (g.features ?? []).join('\n'),
+      minOs: g.minReqs?.os ?? '', minCpu: g.minReqs?.cpu ?? '', minRam: g.minReqs?.ram ?? '',
+      minGpu: g.minReqs?.gpu ?? '', minStorage: g.minReqs?.storage ?? '',
+      recOs: g.recReqs?.os ?? '', recCpu: g.recReqs?.cpu ?? '', recRam: g.recReqs?.ram ?? '',
+      recGpu: g.recReqs?.gpu ?? '', recStorage: g.recReqs?.storage ?? '',
+    });
     setTab('add');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -193,14 +221,51 @@ export default function AdminClient() {
               <label style={{ display: 'block', color: 'var(--text3)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
                 Description *
               </label>
-              <textarea
-                required rows={3}
-                className="input"
-                style={{ resize: 'vertical' }}
-                value={form.description}
-                onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-                placeholder="Game description…"
-              />
+              <textarea required rows={3} className="input" style={{ resize: 'vertical' }} value={form.description}
+                onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Game description…" />
+            </div>
+
+            {/* Screenshots */}
+            <div style={{ marginBottom: '14px' }}>
+              <label style={{ display: 'block', color: 'var(--text3)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+                Screenshot URLs (one per line)
+              </label>
+              <textarea rows={3} className="input" style={{ resize: 'vertical' }} value={form.screenshotsStr}
+                onChange={e => setForm(p => ({ ...p, screenshotsStr: e.target.value }))} placeholder="https://example.com/screenshot1.jpg&#10;https://example.com/screenshot2.jpg" />
+            </div>
+
+            {/* Features */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', color: 'var(--text3)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+                Key Features (one per line)
+              </label>
+              <textarea rows={3} className="input" style={{ resize: 'vertical' }} value={form.featuresStr}
+                onChange={e => setForm(p => ({ ...p, featuresStr: e.target.value }))} placeholder="Open world exploration&#10;Multiplayer support&#10;4K graphics" />
+            </div>
+
+            {/* System Requirements */}
+            <div style={{ marginBottom: '20px' }}>
+              <p style={{ color: 'var(--text3)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>System Requirements (optional)</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                {[
+                  { label: 'Minimum', prefix: 'min' as const },
+                  { label: 'Recommended', prefix: 'rec' as const },
+                ].map(({ label, prefix }) => (
+                  <div key={prefix} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '10px', padding: '14px' }}>
+                    <p style={{ color: 'var(--text2)', fontWeight: 700, fontSize: '0.78rem', marginBottom: '10px' }}>{label}</p>
+                    {(['Os','Cpu','Ram','Gpu','Storage'] as const).map(field => (
+                      <div key={field} style={{ marginBottom: '8px' }}>
+                        <label style={{ display: 'block', color: 'var(--text3)', fontSize: '0.65rem', fontWeight: 600, marginBottom: '3px' }}>{field}</label>
+                        <input className="input" style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                          value={form[`${prefix}${field}` as keyof typeof form]}
+                          onChange={e => setForm(p => ({ ...p, [`${prefix}${field}`]: e.target.value }))}
+                          placeholder={field === 'Os' ? 'Windows 10 64-bit' : field === 'Ram' ? '4 GB' : field === 'Storage' ? '20 GB' : ''}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div style={{ display: 'flex', gap: '10px' }}>

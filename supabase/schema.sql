@@ -1,13 +1,11 @@
 -- ============================================================
--- EliteHubX — Supabase Schema (FIXED)
+-- EliteHubX — Supabase Schema v2 (with SEO fields)
 -- Run this FULL script in: Supabase Dashboard → SQL Editor
 -- ============================================================
 
--- ── Drop existing tables (clean slate) ───────────────────────
 drop table if exists public.users cascade;
 drop table if exists public.games cascade;
 
--- ── Games table ──────────────────────────────────────────────
 create table public.games (
   id            uuid primary key default gen_random_uuid(),
   title         text not null,
@@ -17,12 +15,15 @@ create table public.games (
   size          text not null,
   download_link text not null,
   tags          text[] default '{}',
+  screenshots   text[] default '{}',
+  features      text[] default '{}',
+  min_reqs      jsonb default '{}',
+  rec_reqs      jsonb default '{}',
   views         integer default 0,
   downloads     integer default 0,
   created_at    timestamptz default now()
 );
 
--- ── Users table ───────────────────────────────────────────────
 create table public.users (
   id         uuid primary key default gen_random_uuid(),
   email      text unique not null,
@@ -31,13 +32,9 @@ create table public.users (
   created_at timestamptz default now()
 );
 
--- ── Disable RLS entirely (service role handles security) ─────
--- Our API only uses the service role key which bypasses RLS anyway.
--- This is the simplest and most reliable approach.
 alter table public.games disable row level security;
 alter table public.users disable row level security;
 
--- ── Indexes ───────────────────────────────────────────────────
 create index if not exists games_category_idx on public.games (category);
 create index if not exists games_created_idx  on public.games (created_at desc);
 create index if not exists users_email_idx    on public.users (email);

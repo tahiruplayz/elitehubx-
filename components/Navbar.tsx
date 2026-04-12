@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, Shield, User, LogOut, LogIn, UserPlus, X, Menu } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import type { Game } from '@/lib/games';
+import type { Game } from '@/lib/types';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
