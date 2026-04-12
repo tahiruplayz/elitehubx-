@@ -33,7 +33,7 @@ export default function DownloadClient({ game }: { game: Game }) {
     <div style={{ minHeight: '88vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px', background: 'radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.07) 0%, transparent 60%)' }}>
 
       {/* Monetag — download page only */}
-      <Script src="https://quge5.com/88/tag.min.js" data-zone="228717" strategy="afterInteractive" data-cfasync="false" />
+      <Script src="https://quge5.com/88/tag.min.js" data-zone="229073" strategy="afterInteractive" data-cfasync="false" />
 
       <div className="card fade-in" style={{ width: '100%', maxWidth: '480px', padding: '40px 36px', textAlign: 'center', border: '1px solid rgba(124,58,237,0.15)', boxShadow: '0 0 60px rgba(124,58,237,0.08)' }}>
 
