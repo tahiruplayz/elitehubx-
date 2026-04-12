@@ -111,16 +111,16 @@ export default function Navbar() {
       >
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.25rem', height: '60px', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
 
-          {/* Logo — calligraphy style */}
+          {/* Logo */}
           <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
             <span style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #7c3aed 100%)',
+              background: 'linear-gradient(135deg, #f0f4ff 0%, #c084fc 45%, #7c3aed 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               fontWeight: 900,
-              fontSize: '1.4rem',
-              letterSpacing: '0.06em',
+              fontSize: '1.35rem',
+              letterSpacing: '0.08em',
               fontFamily: "'Cinzel', Georgia, serif",
             }}>
               EliteHubX
