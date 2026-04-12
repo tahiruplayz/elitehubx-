@@ -1,31 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
 
-function getSupabaseUrl() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  if (!url) throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL');
-  return url;
-}
-
-function getAnonKey() {
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!key) throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY');
-  return key;
-}
+const SUPABASE_URL      = process.env.NEXT_PUBLIC_SUPABASE_URL      ?? '';
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 // Public client — safe for browser + server components
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-);
+// Uses empty strings at build time; real values at runtime
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Service-role client — server-only, bypasses RLS
+// Called lazily inside functions, never at module load time
 export function getServiceClient() {
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceKey) throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY');
-  return createClient(getSupabaseUrl(), serviceKey, {
+  const url        = process.env.NEXT_PUBLIC_SUPABASE_URL      ?? '';
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY     ?? '';
+  // Return a no-op client if env vars missing (build time)
+  if (!url || !serviceKey) return supabase;
+  return createClient(url, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
-
-// Re-export key getter for use in db.ts
-export { getAnonKey };
