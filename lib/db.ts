@@ -86,10 +86,11 @@ export async function dbUpdateGame(id: string, game: Partial<Omit<Game, 'id'>>):
   if (game.size         !== undefined) patch.size          = game.size;
   if (game.downloadLink !== undefined) patch.download_link = game.downloadLink;
   if (game.tags         !== undefined) patch.tags          = game.tags;
-  if (game.screenshots  !== undefined) patch.screenshots   = game.screenshots;
-  if (game.features     !== undefined) patch.features      = game.features;
-  if (game.minReqs      !== undefined) patch.min_reqs      = game.minReqs ?? {};
-  if (game.recReqs      !== undefined) patch.rec_reqs      = game.recReqs ?? {};
+  // Always write these — even empty arrays/objects clear old data
+  patch.screenshots = game.screenshots ?? [];
+  patch.features    = game.features    ?? [];
+  patch.min_reqs    = game.minReqs     ?? {};
+  patch.rec_reqs    = game.recReqs     ?? {};
 
   const { data, error } = await sb
     .from('games')

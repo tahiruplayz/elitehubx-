@@ -56,10 +56,18 @@ export async function PUT(req: NextRequest) {
   const tags = parseTags(body.tags);
 
   try {
+    // Log what we're receiving for debugging
+    console.log('[PUT /api/games] body keys:', Object.keys(body));
+    console.log('[PUT /api/games] screenshots:', body.screenshots);
+    console.log('[PUT /api/games] features:', body.features);
+    console.log('[PUT /api/games] minReqs:', body.minReqs);
+    console.log('[PUT /api/games] recReqs:', body.recReqs);
+
     const game = await dbUpdateGame(body.id, { ...body, tags });
     syncGameToJSON(game);
     return NextResponse.json(game);
   } catch (e) {
+    console.error('[PUT /api/games] error:', e);
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
