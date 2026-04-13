@@ -43,33 +43,38 @@ export default function AdminClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const payload = {
-      ...form,
-      tags: form.tagsStr.split(',').map(t => t.trim()).filter(Boolean),
-      screenshots: form.screenshotsStr.split('\n').map(s => s.trim()).filter(Boolean),
-      features: form.featuresStr.split('\n').map(s => s.trim()).filter(Boolean),
-      minReqs: (form.minOs || form.minCpu || form.minRam || form.minGpu || form.minStorage) ? {
-        os: form.minOs || undefined, cpu: form.minCpu || undefined, ram: form.minRam || undefined,
-        gpu: form.minGpu || undefined, storage: form.minStorage || undefined,
-      } : undefined,
-      recReqs: (form.recOs || form.recCpu || form.recRam || form.recGpu || form.recStorage) ? {
-        os: form.recOs || undefined, cpu: form.recCpu || undefined, ram: form.recRam || undefined,
-        gpu: form.recGpu || undefined, storage: form.recStorage || undefined,
-      } : undefined,
-    };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ['tagsStr','screenshotsStr','featuresStr','minOs','minCpu','minRam','minGpu','minStorage','recOs','recCpu','recRam','recGpu','recStorage'].forEach(k => delete (payload as any)[k]);
-    const method = editing ? 'PUT' : 'POST';
-    const body   = editing ? { ...payload, id: editing } : payload;
-    const res    = await fetch('/api/games', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (res.ok) {
-      flash(editing ? 'Game updated!' : 'Game added!');
-      setForm({ ...EMPTY }); setEditing(null); setTab('games'); load();
-    } else {
-      const d = await res.json();
-      flash(d.error || 'Failed to save', false);
+    try {
+      const payload = {
+        ...form,
+        tags: form.tagsStr.split(',').map(t => t.trim()).filter(Boolean),
+        screenshots: form.screenshotsStr.split('\n').map(s => s.trim()).filter(Boolean),
+        features: form.featuresStr.split('\n').map(s => s.trim()).filter(Boolean),
+        minReqs: (form.minOs || form.minCpu || form.minRam || form.minGpu || form.minStorage) ? {
+          os: form.minOs || undefined, cpu: form.minCpu || undefined, ram: form.minRam || undefined,
+          gpu: form.minGpu || undefined, storage: form.minStorage || undefined,
+        } : undefined,
+        recReqs: (form.recOs || form.recCpu || form.recRam || form.recGpu || form.recStorage) ? {
+          os: form.recOs || undefined, cpu: form.recCpu || undefined, ram: form.recRam || undefined,
+          gpu: form.recGpu || undefined, storage: form.recStorage || undefined,
+        } : undefined,
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ['tagsStr','screenshotsStr','featuresStr','minOs','minCpu','minRam','minGpu','minStorage','recOs','recCpu','recRam','recGpu','recStorage'].forEach(k => delete (payload as any)[k]);
+      const method = editing ? 'PUT' : 'POST';
+      const body   = editing ? { ...payload, id: editing } : payload;
+      const res    = await fetch('/api/games', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const data   = await res.json();
+      if (res.ok) {
+        flash(editing ? 'Game updated!' : 'Game added successfully!');
+        setForm({ ...EMPTY }); setEditing(null); setTab('games'); load();
+      } else {
+        flash(data.error || `Error ${res.status}: Failed to save game`, false);
+      }
+    } catch (err) {
+      flash(`Network error: ${err instanceof Error ? err.message : 'Unknown error'}`, false);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const handleEdit = (g: Game) => {
