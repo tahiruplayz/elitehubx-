@@ -44,34 +44,42 @@ export default function AdminClient() {
     e.preventDefault();
     setSaving(true);
     try {
+      const screenshots = form.screenshotsStr.split('\n').map(s => s.trim()).filter(Boolean);
+      const features    = form.featuresStr.split('\n').map(s => s.trim()).filter(Boolean);
+      const tags        = form.tagsStr.split(',').map(t => t.trim()).filter(Boolean);
+
+      const minOs = form.minOs.trim(); const minCpu = form.minCpu.trim();
+      const minRam = form.minRam.trim(); const minGpu = form.minGpu.trim(); const minStorage = form.minStorage.trim();
+      const recOs = form.recOs.trim(); const recCpu = form.recCpu.trim();
+      const recRam = form.recRam.trim(); const recGpu = form.recGpu.trim(); const recStorage = form.recStorage.trim();
+
+      const minReqs = (minOs || minCpu || minRam || minGpu || minStorage)
+        ? { os: minOs || undefined, cpu: minCpu || undefined, ram: minRam || undefined, gpu: minGpu || undefined, storage: minStorage || undefined }
+        : {};
+      const recReqs = (recOs || recCpu || recRam || recGpu || recStorage)
+        ? { os: recOs || undefined, cpu: recCpu || undefined, ram: recRam || undefined, gpu: recGpu || undefined, storage: recStorage || undefined }
+        : {};
+
       const payload = {
-        ...form,
-        tags: form.tagsStr.split(',').map(t => t.trim()).filter(Boolean),
-        screenshots: form.screenshotsStr.split('\n').map(s => s.trim()).filter(Boolean),
-        features: form.featuresStr.split('\n').map(s => s.trim()).filter(Boolean),
-        minReqs: (form.minOs || form.minCpu || form.minRam || form.minGpu || form.minStorage) ? {
-          os: form.minOs || undefined, cpu: form.minCpu || undefined, ram: form.minRam || undefined,
-          gpu: form.minGpu || undefined, storage: form.minStorage || undefined,
-        } : undefined,
-        recReqs: (form.recOs || form.recCpu || form.recRam || form.recGpu || form.recStorage) ? {
-          os: form.recOs || undefined, cpu: form.recCpu || undefined, ram: form.recRam || undefined,
-          gpu: form.recGpu || undefined, storage: form.recStorage || undefined,
-        } : undefined,
+        title: form.title, description: form.description, image: form.image,
+        category: form.category, size: form.size, downloadLink: form.downloadLink,
+        tags, screenshots, features, minReqs, recReqs,
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ['tagsStr','screenshotsStr','featuresStr','minOs','minCpu','minRam','minGpu','minStorage','recOs','recCpu','recRam','recGpu','recStorage'].forEach(k => delete (payload as any)[k]);
+
       const method = editing ? 'PUT' : 'POST';
       const body   = editing ? { ...payload, id: editing } : payload;
-      const res    = await fetch('/api/games', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-      const data   = await res.json();
+
+      const res  = await fetch('/api/games', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const data = await res.json();
+
       if (res.ok) {
         flash(editing ? 'Game updated!' : 'Game added successfully!');
         setForm({ ...EMPTY }); setEditing(null); setTab('games'); load();
       } else {
-        flash(data.error || `Error ${res.status}: Failed to save game`, false);
+        flash(data.error || `Error ${res.status}: Failed to save`, false);
       }
     } catch (err) {
-      flash(`Network error: ${err instanceof Error ? err.message : 'Unknown error'}`, false);
+      flash(`Error: ${err instanceof Error ? err.message : 'Unknown'}`, false);
     } finally {
       setSaving(false);
     }
