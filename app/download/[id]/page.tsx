@@ -6,10 +6,11 @@ import type { Game } from '@/lib/types';
 
 interface Props { params: Promise<{ id: string }> }
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateStaticParams() {
-  return getAllGamesFromJSON().map(g => ({ id: g.id }));
+  return [];
 }
 
 export default async function DownloadPage({ params }: Props) {
