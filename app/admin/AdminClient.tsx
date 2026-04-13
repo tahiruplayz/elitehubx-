@@ -7,9 +7,6 @@ import { Gamepad2, Folder, Eye, ArrowDownToLine, LayoutDashboard, PlusCircle, Li
 
 const EMPTY = {
   title: '', description: '', image: '', category: '', size: '', downloadLink: '', tagsStr: '',
-  screenshotsStr: '', featuresStr: '',
-  minOs: '', minCpu: '', minRam: '', minGpu: '', minStorage: '',
-  recOs: '', recCpu: '', recRam: '', recGpu: '', recStorage: '',
 };
 
 type Tab = 'dashboard' | 'add' | 'games';
@@ -44,34 +41,15 @@ export default function AdminClient() {
     e.preventDefault();
     setSaving(true);
     try {
-      const screenshots = form.screenshotsStr.split('\n').map(s => s.trim()).filter(Boolean);
-      const features    = form.featuresStr.split('\n').map(s => s.trim()).filter(Boolean);
-      const tags        = form.tagsStr.split(',').map(t => t.trim()).filter(Boolean);
-
-      const minOs = form.minOs.trim(); const minCpu = form.minCpu.trim();
-      const minRam = form.minRam.trim(); const minGpu = form.minGpu.trim(); const minStorage = form.minStorage.trim();
-      const recOs = form.recOs.trim(); const recCpu = form.recCpu.trim();
-      const recRam = form.recRam.trim(); const recGpu = form.recGpu.trim(); const recStorage = form.recStorage.trim();
-
-      const minReqs = (minOs || minCpu || minRam || minGpu || minStorage)
-        ? { os: minOs || undefined, cpu: minCpu || undefined, ram: minRam || undefined, gpu: minGpu || undefined, storage: minStorage || undefined }
-        : {};
-      const recReqs = (recOs || recCpu || recRam || recGpu || recStorage)
-        ? { os: recOs || undefined, cpu: recCpu || undefined, ram: recRam || undefined, gpu: recGpu || undefined, storage: recStorage || undefined }
-        : {};
-
       const payload = {
         title: form.title, description: form.description, image: form.image,
         category: form.category, size: form.size, downloadLink: form.downloadLink,
-        tags, screenshots, features, minReqs, recReqs,
+        tags: form.tagsStr.split(',').map(t => t.trim()).filter(Boolean),
       };
-
       const method = editing ? 'PUT' : 'POST';
       const body   = editing ? { ...payload, id: editing } : payload;
-
-      const res  = await fetch('/api/games', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-      const data = await res.json();
-
+      const res    = await fetch('/api/games', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const data   = await res.json();
       if (res.ok) {
         flash(editing ? 'Game updated!' : 'Game added successfully!');
         setForm({ ...EMPTY }); setEditing(null); setTab('games'); load();
@@ -91,12 +69,6 @@ export default function AdminClient() {
       title: g.title, description: g.description, image: g.image,
       category: g.category, size: g.size, downloadLink: g.downloadLink,
       tagsStr: g.tags.join(', '),
-      screenshotsStr: (g.screenshots ?? []).join('\n'),
-      featuresStr: (g.features ?? []).join('\n'),
-      minOs: g.minReqs?.os ?? '', minCpu: g.minReqs?.cpu ?? '', minRam: g.minReqs?.ram ?? '',
-      minGpu: g.minReqs?.gpu ?? '', minStorage: g.minReqs?.storage ?? '',
-      recOs: g.recReqs?.os ?? '', recCpu: g.recReqs?.cpu ?? '', recRam: g.recReqs?.ram ?? '',
-      recGpu: g.recReqs?.gpu ?? '', recStorage: g.recReqs?.storage ?? '',
     });
     setTab('add');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -236,49 +208,6 @@ export default function AdminClient() {
               </label>
               <textarea required rows={3} className="input" style={{ resize: 'vertical' }} value={form.description}
                 onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Game description…" />
-            </div>
-
-            {/* Screenshots */}
-            <div style={{ marginBottom: '14px' }}>
-              <label style={{ display: 'block', color: 'var(--text3)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
-                Screenshot URLs (one per line)
-              </label>
-              <textarea rows={3} className="input" style={{ resize: 'vertical' }} value={form.screenshotsStr}
-                onChange={e => setForm(p => ({ ...p, screenshotsStr: e.target.value }))} placeholder="https://example.com/screenshot1.jpg&#10;https://example.com/screenshot2.jpg" />
-            </div>
-
-            {/* Features */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', color: 'var(--text3)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
-                Key Features (one per line)
-              </label>
-              <textarea rows={3} className="input" style={{ resize: 'vertical' }} value={form.featuresStr}
-                onChange={e => setForm(p => ({ ...p, featuresStr: e.target.value }))} placeholder="Open world exploration&#10;Multiplayer support&#10;4K graphics" />
-            </div>
-
-            {/* System Requirements */}
-            <div style={{ marginBottom: '20px' }}>
-              <p style={{ color: 'var(--text3)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>System Requirements (optional)</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                {[
-                  { label: 'Minimum', prefix: 'min' as const },
-                  { label: 'Recommended', prefix: 'rec' as const },
-                ].map(({ label, prefix }) => (
-                  <div key={prefix} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '10px', padding: '14px' }}>
-                    <p style={{ color: 'var(--text2)', fontWeight: 700, fontSize: '0.78rem', marginBottom: '10px' }}>{label}</p>
-                    {(['Os','Cpu','Ram','Gpu','Storage'] as const).map(field => (
-                      <div key={field} style={{ marginBottom: '8px' }}>
-                        <label style={{ display: 'block', color: 'var(--text3)', fontSize: '0.65rem', fontWeight: 600, marginBottom: '3px' }}>{field}</label>
-                        <input className="input" style={{ padding: '6px 10px', fontSize: '0.8rem' }}
-                          value={form[`${prefix}${field}` as keyof typeof form]}
-                          onChange={e => setForm(p => ({ ...p, [`${prefix}${field}`]: e.target.value }))}
-                          placeholder={field === 'Os' ? 'Windows 10 64-bit' : field === 'Ram' ? '4 GB' : field === 'Storage' ? '20 GB' : ''}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
             </div>
 
             <div style={{ display: 'flex', gap: '10px' }}>
