@@ -49,11 +49,11 @@ export default function CategoriesClient({ games }: { games: Game[] }) {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '210px 1fr', gap: '24px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '210px 1fr', gap: '24px', alignItems: 'start' }} className="categories-layout">
 
         {/* ── Sidebar ─────────────────────────────────────────── */}
         <aside
-          className="card"
+          className="card categories-sidebar"
           style={{ padding: '20px', position: 'sticky', top: '76px' }}
         >
           {/* Search */}
@@ -105,7 +105,7 @@ export default function CategoriesClient({ games }: { games: Game[] }) {
               <p>No games match your filters.</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(185px, 1fr))', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(185px, 1fr))', gap: '16px' }} className="search-grid">
               {filtered.map((g, i) => <GameCard key={g.id} game={g} showBadge={i < 3} />)}
             </div>
           )}

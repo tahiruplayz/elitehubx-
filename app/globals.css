@@ -251,3 +251,132 @@ body {
   .hide-mobile { display: none !important; }
   .game-detail-grid { grid-template-columns: 1fr !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE & TABLET RESPONSIVE — desktop styles unchanged
+   Breakpoints: tablet ≤ 1024px, mobile ≤ 640px
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tablet (≤ 1024px) ────────────────────────────────────── */
+@media (max-width: 1024px) {
+  /* Game detail: stack sidebar below content */
+  .game-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Categories: narrower sidebar */
+  .categories-layout {
+    grid-template-columns: 180px 1fr !important;
+  }
+}
+
+/* ── Mobile (≤ 640px) ─────────────────────────────────────── */
+@media (max-width: 640px) {
+
+  /* ── Global spacing ─────────────────────────────────────── */
+  body { font-size: 15px; }
+
+  /* ── Hero section ───────────────────────────────────────── */
+  .hero-content {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    padding: 1.5rem 1rem !important;
+    align-items: flex-start !important;
+  }
+  .hero-cover {
+    width: 120px !important;
+    aspect-ratio: 3/4 !important;
+  }
+  .hero-title {
+    font-size: 1.6rem !important;
+  }
+
+  /* ── Game cards: slightly smaller on mobile ─────────────── */
+  .game-card[style*="width: 195px"],
+  .game-card[style*="width: 190px"],
+  .game-card[style*="width: 185px"] {
+    width: 155px !important;
+  }
+
+  /* ── Game detail: full width layout ────────────────────── */
+  .game-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Categories: hide sidebar, show filter bar ──────────── */
+  .categories-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .categories-sidebar {
+    position: static !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+  .categories-sidebar > div {
+    margin-bottom: 0 !important;
+  }
+
+  /* ── Admin: stack sys reqs grid ─────────────────────────── */
+  .admin-reqs-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Download page ──────────────────────────────────────── */
+  .download-card {
+    padding: 24px 16px !important;
+  }
+
+  /* ── Section titles ─────────────────────────────────────── */
+  .section-title {
+    font-size: 1rem !important;
+  }
+
+  /* ── Buttons: full width on mobile ─────────────────────── */
+  .btn-full-mobile {
+    width: 100% !important;
+  }
+
+  /* ── Page padding ───────────────────────────────────────── */
+  .page-pad {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* ── Scroll row: smaller gap ────────────────────────────── */
+  .scroll-row {
+    gap: 10px !important;
+  }
+
+  /* ── Category grid: 2 columns on mobile ─────────────────── */
+  .cat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* ── Game detail banner height ──────────────────────────── */
+  .game-banner {
+    height: 220px !important;
+  }
+
+  /* ── Search results grid ────────────────────────────────── */
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* ── Navbar height ──────────────────────────────────────── */
+  nav > div {
+    height: 54px !important;
+  }
+}
+
+/* ── Small mobile (≤ 380px) ──────────────────────────────── */
+@media (max-width: 380px) {
+  .game-card[style*="width"] {
+    width: 140px !important;
+  }
+  .hero-title {
+    font-size: 1.35rem !important;
+  }
+}

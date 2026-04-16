@@ -67,10 +67,10 @@ export default async function HomePage({ searchParams }: Props) {
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(105deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.75) 50%, rgba(124,58,237,0.08) 100%)' }} />
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '160px', background: 'linear-gradient(to top, #0f0f0f, transparent)' }} />
 
-          <div style={{ position: 'relative', zIndex: 2, maxWidth: '1280px', margin: '0 auto', padding: 'clamp(2.5rem,6vw,4rem) 1.5rem', height: '100%', display: 'flex', alignItems: 'center', gap: '3rem' }}>
+          <div style={{ position: 'relative', zIndex: 2, maxWidth: '1280px', margin: '0 auto', padding: 'clamp(2.5rem,6vw,4rem) 1.5rem', height: '100%', display: 'flex', alignItems: 'center', gap: '3rem' }} className="hero-content">
             {/* Cover */}
-            <div style={{ position: 'relative', flexShrink: 0 }}>
-              <img src={featured.image} alt={featured.title}
+            <div style={{ position: 'relative', flexShrink: 0 }} className="hero-cover-wrap">
+              <img src={featured.image} alt={featured.title} className="hero-cover"
                 style={{ width: 'clamp(120px,15vw,175px)', aspectRatio: '3/4', objectFit: 'cover', borderRadius: '16px', border: '2px solid rgba(124,58,237,0.5)', boxShadow: '0 0 60px rgba(124,58,237,0.4), 0 20px 40px rgba(0,0,0,0.6)' }}
               />
               {isLowEnd(featured) && (
@@ -89,7 +89,7 @@ export default async function HomePage({ searchParams }: Props) {
                   <span className="badge badge-amber">{(featured.downloads ?? 0).toLocaleString()} downloads</span>
                 )}
               </div>
-              <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, color: '#fff', lineHeight: 1.05, marginBottom: '16px', letterSpacing: '-0.03em' }}>
+              <h1 className="hero-title" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, color: '#fff', lineHeight: 1.05, marginBottom: '16px', letterSpacing: '-0.03em' }}>
                 {featured.title}
               </h1>
               <p style={{ color: '#94a3b8', fontSize: '0.97rem', lineHeight: 1.7, marginBottom: '28px', maxWidth: '460px' }}>
@@ -141,7 +141,7 @@ export default async function HomePage({ searchParams }: Props) {
                 <p style={{ fontSize: '0.85rem' }}>Try searching for a genre, like &quot;action&quot; or &quot;fps&quot;</p>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '16px' }} className="search-grid">
                 {filtered.map((g, i) => <GameCard key={g.id} game={g} showBadge={i === 0} />)}
               </div>
             )}
@@ -192,7 +192,7 @@ export default async function HomePage({ searchParams }: Props) {
                   View all →
                 </Link>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px' }} className="cat-grid">
                 {categories.slice(0, 8).map(cat => {
                   const count = allGames.filter(g => g.category === cat).length;
                   return (
